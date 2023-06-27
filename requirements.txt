@@ -1,0 +1,10 @@
+psycopg2-binary
+sqlalchemy
+pytz
+pyOpenSSL
+ndg-httpsclient
+pyasn1
+apache-airflow
+redis
+urllib3
+cffi

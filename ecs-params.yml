@@ -1,0 +1,10 @@
+version: 1
+task_definition:
+  task_size:
+    mem_limit: 2084
+  efs_volumes:
+    - name: "efs"
+      filesystem_id: "fs-b269efca"
+      root_directory: /
+      transit_encryption: DISABLED
+      iam: DISABLED

@@ -1,0 +1,69 @@
+version: '3'
+volumes:
+  efs:
+      
+services:
+    webserver:
+        image: 889800353855.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
+#        restart: always
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Celery
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow123
+            - POSTGRES_DB=airflow
+            - POSTGRES_HOST=airflow.cnqhzexbeqbq.us-east-2.rds.amazonaws.com
+            # - REDIS_PASSWORD=redispass
+        volumes:
+            - efs:/usr/local/airflow/efs
+        ports:
+            - "8080:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
+
+    flower:
+        image: 889800353855.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
+#        restart: always
+        environment:
+            - EXECUTOR=Celery
+            # - REDIS_PASSWORD=redispass
+        ports:
+            - "5555:5555"
+        command: flower
+
+    scheduler:
+        image: 889800353855.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
+#        restart: always
+        depends_on:
+            - webserver
+        volumes:
+            - efs:/usr/local/airflow/efs
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Celery
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow123
+            - POSTGRES_DB=airflow
+            - POSTGRES_HOST=airflow.cnqhzexbeqbq.us-east-2.rds.amazonaws.com
+            # - REDIS_PASSWORD=redispass
+        command: scheduler
+
+    worker:
+        image: 889800353855.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
+#        restart: always
+        depends_on:
+            - scheduler
+        volumes:
+            - efs:/usr/local/airflow/efs
+        environment:
+            - EXECUTOR=Celery
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow123
+            - POSTGRES_DB=airflow
+            - POSTGRES_HOST=airflow.cnqhzexbeqbq.us-east-2.rds.amazonaws.com
+            # - REDIS_PASSWORD=redispass
+        command: worker

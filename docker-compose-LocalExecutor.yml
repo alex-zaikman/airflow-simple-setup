@@ -1,0 +1,26 @@
+version: '3'
+volumes:
+  efs:
+
+services:
+    webserver:
+        image: 889800353855.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Local
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow123
+            - POSTGRES_DB=airflow
+            - POSTGRES_HOST=airflow.cnqhzexbeqbq.us-east-2.rds.amazonaws.com
+            - FERNET_KEY=TfMRhYpfkQxYwnNnjOlo-OWI67yQlfgzG5BwACXwJaU=
+        volumes:
+            - efs:/usr/local/airflow/efs
+            # - ./plugins:/usr/local/airflow/plugins
+        ports:
+            - "8080:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
