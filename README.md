@@ -1,4 +1,4 @@
-# AirFlow small project
+# AirFlow and AWS small project example.
 
 **Make sure to replace the <aws-project-id> for this project to work properly** 
 
