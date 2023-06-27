@@ -4,7 +4,7 @@ volumes:
 
 services:
     webserver:
-        image: 889800353855.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
+        image: <aws-project-id>.dkr.ecr.us-east-2.amazonaws.com/airflow:latest
         environment:
             - LOAD_EX=n
             - EXECUTOR=Local
